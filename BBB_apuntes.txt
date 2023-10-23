@@ -1,0 +1,305 @@
+1) https://rcn-ee.com/rootfs/bb.org/testing/2023-01-02/buster-lxqt-armhf/
+-----------------------------------------------------------------------------------
+ping 192.168.7.1 (miPC)-Uso Compartido-Activar-Permitir que los usuarios de otras redes...(windows)
+Ethernet2(BBB en windows)-config iPv4-Propiedades-todo automático
+sudo /sbin/route add default gw 192.168.7.1   (BBB)
+sudo nano /etc/resolv.conf (BBB)
+nameserver 8.8.8.8 
+nameserver 8.8.4.4 
+
+---------------------------------------------------------------------------------------------------------
+How To Fix the “Warning: Remote Host Identification Has Changed” Error (on Windows) 
+
+open the Windows search bar, and navigate to your user folder with the %USERPROFILE% command.
+
+This will open the directory within the File Explorer. There will also be a .ssh folder
+
+The file we want in this folder is known_hosts. You can open this with Notepad (or your favorite text editor)
+
+Here, you can delete the key that’s causing the problem, then resave the file.
+---------------------------------------------------------------------------------------------------
+On newer Debian system images coming from BeagleBoard.org / Robert Nelson, you can run the script:
+
+sudo /opt/scripts/tools/grow_partition.sh
+>reboot
+---------------------------------------------------------------------------------------------
+Need to connect to a WiFi access point first?
+Use the command-line terminal block below to run the commands in bold, modifying as appropriate for your network.
+
+debian@beaglebone:/var/lib/cloud9$ sudo connmanctl
+[sudo] password for debian: temppwd⏎
+connmanctl> scan wifi⏎
+Scan completed for wifi
+connmanctl> services⏎
+       MyWifi                  wifi_1234567890_1234567890123456_managed_psk
+connmanctl> agent on⏎
+Agent registered
+connmanctl> connect wifi_1234567890_1234567890123456_managed_psk⏎
+Agent RequestInput wifi_1234567890_1234567890123456_managed_psk
+       Passphrase = [ Type=psk, Requirement=mandatory, Alternates=[ WPS ] ]
+       WPS = [ Type=wpspin, Requirement=alternate ]
+Passphrase? MySecretPassphrase⏎
+Connected wifi_1234567890_1234567890123456_managed_psk
+connmanctl> quit⏎
+debian@beaglebone:/var/lib/cloud9$
+----------------------------------------------------------------------------------------------
+>sudo apt update
+>sudo apt upgrage (sudo apt upgrade --fix-missing)
+----------------------------------------------------------------------------------------------
+> ssh   debian@192.168.7.2
+password: temppwd
+>sudo apt install neofetch
+>neofetch
+------------------------------------------------------------------------------------------
+=>Enceder Led: P8_12 (GPIO 44)
+
+$cd /sys/class/gpio
+$ls
+export   gpio113  gpio13  gpio22  gpio31  gpio37  gpio46  gpio51  gpio66  gpio71  gpio77  gpio86     gpiochip32
+gpio10   gpio114  gpio14  gpio23  gpio32  gpio38  gpio47  gpio60  gpio67  gpio72  gpio78  gpio87     gpiochip64
+gpio11   gpio115  gpio15  gpio26  gpio33  gpio39  gpio48  gpio61  gpio68  gpio73  gpio79  gpio88     gpiochip96
+gpio110  gpio116  gpio19  gpio27  gpio34  gpio4   gpio49  gpio62  gpio69  gpio74  gpio8   gpio89     unexport
+gpio111  gpio117  gpio2   gpio3   gpio35  gpio44  gpio5   gpio63  gpio7   gpio75  gpio80  gpio9
+gpio112  gpio12   gpio20  gpio30  gpio36  gpio45  gpio50  gpio65  gpio70  gpio76  gpio81  gpiochip0
+$cd gpio44
+gpio44$ls
+active_low  device  direction  edge  label  power  subsystem  uevent  value
+gpio44$cat direction
+in
+gpio44$ echo out > direction
+gpio44$cat direction
+out
+gpio44$echo 1 > value
+gpio44$echo 0 > value
+----------------------------------------------------------------------------------------------
+$nano Mi_blink.py
+$python3 Mi_blink.py
+-----------------------------------------------------------------------------------------------
+Para detectar el módulo de tiempo real (RTC) DS3231 en tu BeagleBone Black que está conectado al bus I2C2, puedes seguir estos pasos:
+
+1. **Conexiones físicas:** Asegúrate de que el DS3231 esté correctamente conectado al BeagleBone Black a través del bus I2C2. El DS3231 tiene dos pines de comunicación I2C, SDA (Serial Data) y SCL (Serial Clock), que deben conectarse a los pines adecuados de la BeagleBone Black.
+
+2. **Configuración de I2C2:** Asegúrate de que el bus I2C2 esté habilitado y configurado correctamente. Puedes hacerlo mediante el uso de comandos `config-pin` o modificando el archivo de configuración `/boot/uEnv.txt`. Asegúrate de que I2C2 esté habilitado y que los pines SDA y SCL estén configurados correctamente.
+
+   Por ejemplo, puedes configurar los pines P9_20 (SDA) y P9_19 (SCL) para I2C2 con el siguiente comando:
+
+   ```bash
+   config-pin P9_20 i2c
+   config-pin P9_19 i2c
+   ```
+
+3. **Herramientas de I2C:** Asegúrate de que tengas las herramientas de I2C instaladas en tu BeagleBone Black. Puedes usar `i2cdetect` para buscar dispositivos en el bus I2C. Si aún no está instalado, puedes instalarlo ejecutando el siguiente comando:
+
+   ```bash
+   sudo apt-get install i2c-tools
+   ```
+
+4. **Escaneo de dispositivos I2C:** Ejecuta el comando `i2cdetect` en la terminal para escanear el bus I2C2 y buscar dispositivos conectados. Asegúrate de que tu BeagleBone Black esté conectada a Internet para que pueda buscar información actualizada sobre los dispositivos I2C. El DS3231 generalmente tiene la dirección 0x68. Ejecuta el siguiente comando:
+
+   ```bash
+   i2cdetect -y -r 2
+   ```
+
+   Reemplaza el número después de `-r` con el número de tu bus I2C2 si no es el 2.
+
+   El comando mostrará una matriz con las direcciones de los dispositivos detectados. Deberías ver "68" en la posición correspondiente si el DS3231 está conectado correctamente.
+
+Si ves la dirección 0x68 en la matriz, eso significa que el DS3231 ha sido detectado en el bus I2C2 de tu BeagleBone Black. Ahora puedes proceder a interactuar con el DS3231 para configurar la hora y leerla según tus necesidades.
+-----------------------------------------------------------------------------------------------------------------
+debian@beaglebone:~$ config-pin P9_20 i2c
+
+Current mode for P9_20 is:     i2c
+
+debian@beaglebone:~$ config-pin P9_19 i2c
+
+Current mode for P9_19 is:     i2c
+
+debian@beaglebone:~$ i2cdetect -y -r 2
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- 68 -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- --
+debian@beaglebone:~$
+------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------
+debian@beaglebone:/sys/bus/i2c/devices$ i2cdump -y 2 0x68 b
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: 06 48 20 01 01 01 00 00 00 00 00 00 00 00 1c 88    ?H ???........??
+10: 00 15 c0 00 00 00 00 00 00 00 00 00 00 00 00 00    .??.............
+20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+00/0 son los segundos.
+---------------------------------------------------------------------------------------------------------
+SPI
+
+- Para ver el estado actual:
+debian@beaglebone:~/adrian_trabajo$ config-pin -q p9.17
+Current mode for P9_17 is:     default
+
+-Para configurar:
+debian@beaglebone:~$ config-pin -l  p9.17
+Available modes for P9_17 are: default gpio gpio_pu gpio_pd gpio_input spi_cs i2c pwm pru_uart
+
+debian@beaglebone:~$ config-pin p9.17 spi_cs
+Current mode for P9_17 is:     spi_cs
+
+debian@beaglebone:~$ config-pin -l  p9.21
+Available modes for P9_21 are: default gpio gpio_pu gpio_pd gpio_input spi uart i2c pwm pru_uart
+
+debian@beaglebone:~$ config-pin p9.21 spi
+Current mode for P9_21 is:     spi
+
+debian@beaglebone:~$ config-pin -l  p9.18
+Available modes for P9_18 are: default gpio gpio_pu gpio_pd gpio_input spi i2c pwm pru_uart
+
+debian@beaglebone:~$ config-pin p9.18 spi
+Current mode for P9_18 is:     spi
+
+debian@beaglebone:~$ config-pin -l  p9.22
+Available modes for P9_22 are: default gpio gpio_pu gpio_pd gpio_input spi_sclk uart i2c pwm pru_uart
+
+debian@beaglebone:~$ config-pin p9.22 spi_sclk
+Current mode for P9_22 is:     spi_sclk
+-------------------------------------------------------------------------------------------------------
+Gracias por proporcionar las definiciones exactas de `writebytes` y `xfer2` de la biblioteca `Adafruit_BBIO.SPI`. A partir de las definiciones, podemos enfatizar las diferencias clave:
+
+1. `writebytes`:
+   - Este método se utiliza para escribir (enviar) datos al dispositivo SPI.
+   - Se espera una lista de enteros como argumento para enviar datos.
+   - No se espera una respuesta del dispositivo SPI, ya que se trata de una operación de escritura unidireccional.
+
+2. `xfer2`:
+   - `xfer2` se utiliza para realizar una transacción SPI que involucra la transferencia (escritura) de datos y la recepción de datos en un solo llamado.
+   - Requiere una lista de enteros como argumento para especificar los datos que se enviarán al dispositivo SPI.
+   - Devuelve una lista de enteros que contiene los datos recibidos del dispositivo SPI como respuesta a la transacción.
+   - La función `xfer2` mantiene activo el pin Slave Select (SS o CS) entre bloques de datos en la transacción. Esto significa que la selección del esclavo SPI se mantiene activa a lo largo de la transacción.
+
+En resumen, `writebytes` se utiliza principalmente para escribir datos unidireccionalmente en el dispositivo SPI, mientras que `xfer2` se utiliza cuando se necesita enviar datos y recibir datos como parte de una sola transacción bidireccional. Ambos métodos tienen una limitación de longitud máxima de 1024 bytes en la lista de valores a transferir.
+----------------------------------------------------------------------------------------------------------
+SPI — Serial Peripheral Interface
+This module defines an object type that allows Serial Peripheral Interface (SPI) bus transactions on hosts running the Linux kernel. The host kernel must have SPI support and SPI device interface support.
+
+Because the SPI device interface is opened R/W, users of this module usually must have root permissions or be members of a group with granted access rights.
+
+Pins used for SPI0 and SPI1
+PORT	CS0	DO	DI	SCLK
+SPI0	P9_17	P9_21	P9_18	P9_22
+SPI1	P9_28	P9_29	P9_30	P9_31
+Example:
+
+import Adafruit_BBIO.SPI as SPI
+
+#conectar P9_21	-> P9_18
+
+from Adafruit_BBIO.SPI import SPI
+# spi = SPI(bus, device) #/dev/spidev<bus>.<device>
+
+# /dev/spidev0.0
+spi = SPI(0, 0)
+print(spi.xfer2([32, 11, 110, 22, 220]))
+spi.close()
+
+# /dev/spidev0.1
+spi = SPI(0, 1)
+print(spi.xfer2([32, 11, 110, 22, 220]))
+spi.close()
+
+# /dev/spidev1.0
+spi = SPI(1, 0)
+print(spi.xfer2([32, 11, 110, 22, 220]))
+spi.close()
+
+# /dev/spidev1.1
+spi = SPI(1, 1)
+print(spi.xfer2([32, 11, 110, 22, 220]))
+spi.close()
+classAdafruit_BBIO.SPI.SPI(bus, client)
+Parameters:	
+bus – bus number.
+client – client device number.
+Returns:	
+a new SPI object, optionally connected to the specified SPI device interface.
+
+Return type:	
+SPI
+
+bpw
+Bits per word.
+
+cshigh
+Chip Select (CS or Slave Select, SS) active high.
+
+loop
+Loopback configuration.
+
+lsbfirst
+Least Significant Bit (LSB) first.
+
+mode
+SPI mode as two bit pattern of Clock Polarity and Phase [CPOL|CPHA]; min– 0b00 = 0, max– 0b11 = 3.
+
+msh
+Maximum speed in Hz.
+
+threewire
+SI/SO signals are shared.
+
+open(bus, device)
+Connects the object to the specified SPI device. open(X, Y) will open /dev/spidev-X.Y
+
+Parameters:	
+bus (int) – bus number
+device (str) – device number
+close()
+Disconnects the object from the interface.
+
+readbytes(len)
+Read the specified length of bytes from the SPI device.
+
+Parameters:	len (int) – length of bytes to read, 1024 maximum.
+Returns:	values read
+Return type:	list[int]
+writebytes(values)
+Write bytes to the SPI device.
+
+Parameters:	values (list[int]) – list of values to write, with a maximum length of 1024.
+xfer(values[, delay=0])
+Perform an SPI transaction of values. Slave Select (SS or CS) will be released and reactivated between blocks.
+
+Parameters:	
+values (list[int]) – list of values to transfer, with a maximum length of 1024.
+delay – delay in microseconds between blocks.
+Returns:	
+values transferred
+
+Return type:	
+list[int]
+
+xfer2(values)
+Perform an SPI transaction of values. Slave Select (SS or CS) will be held active between blocks.
+
+Parameters:	values (list[int]) – list of values to transfer, with a maximum length of 1024.
+Returns:	values transferred
+Return type:	list[int]
+-----------------------------------------------------------------------------------------------
+Enviar y Recibir por SCP
+
+
